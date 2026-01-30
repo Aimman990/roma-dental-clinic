@@ -28,4 +28,5 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-av
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
 EXPOSE 80
-CMD php artisan config:clear && php artisan migrate --force && apache2-foreground
+# تنفيذ الميجريشن والسييدر ثم تشغيل السيرفر
+CMD php artisan config:clear && php artisan migrate --force --seed && apache2-foreground
