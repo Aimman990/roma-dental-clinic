@@ -65,7 +65,7 @@ class DatabaseSeeder extends Seeder
     // 1. إنشاء المسؤول (Admin) - بيانات يدوية لضمان الأمان
     User::create([
         'name' => 'Aiman',
-        'email' => 'aiman@gmail.com',
+        'email' => 'aiman-ali@gmail.com',
         'role' => 'admin',
         'password' => bcrypt('password'),
         'monthly_salary' => 0,
