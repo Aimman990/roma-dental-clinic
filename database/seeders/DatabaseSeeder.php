@@ -59,49 +59,56 @@ class DatabaseSeeder extends Seeder
     //     }
 
     // }
-
-    public function run(): void
+public function run(): void
 {
-    // 1. إنشاء المسؤول (Admin) - بيانات يدوية لضمان الأمان
-    User::create([
-        'name' => 'Aiman',
-        'email' => 'aiman-ali@gmail.com',
-        'role' => 'admin',
-        'password' => bcrypt('password'),
-        'monthly_salary' => 0,
-        'commission_pct' => 0,
-    ]);
+    // 1. إضافة أو تحديث المسؤول (Admin)
+    User::updateOrCreate(
+        ['email' => 'aiman@gmail.com'], // شرط البحث
+        [
+            'name' => 'Aiman',
+            'role' => 'admin',
+            'password' => bcrypt('password'),
+            'monthly_salary' => 0,
+            'commission_pct' => 0,
+        ]
+    );
 
-    // 2. إنشاء موظف الاستقبال
-    User::create([
-        'name' => 'Receptionist',
-        'email' => 'reception@example.test',
-        'role' => 'user',
-        'password' => bcrypt('password'),
-        'monthly_salary' => 1500,
-        'commission_pct' => 0,
-    ]);
-
-    // 3. إنشاء الأطباء (بشكل مباشر بدون each)
-    for ($i = 1; $i <= 3; $i++) {
-        $doctor = User::create([
-            'name' => "Doctor $i",
-            'email' => "doctor$i@example.com",
+    // 2. إضافة أو تحديث موظف الاستقبال
+    User::updateOrCreate(
+        ['email' => 'reception@example.test'],
+        [
+            'name' => 'Receptionist',
             'role' => 'user',
             'password' => bcrypt('password'),
-            'commission_pct' => 30,
-            'monthly_salary' => 0,
-        ]);
+            'monthly_salary' => 1500,
+            'commission_pct' => 0,
+        ]
+    );
 
-        // إنشاء خدمات لكل طبيب
-        Service::factory(2)->create(['doctor_id' => $doctor->id]);
+    // 3. إضافة الأطباء والخدمات (بشكل بسيط)
+    for ($i = 1; $i <= 2; $i++) {
+        $doctor = User::updateOrCreate(
+            ['email' => "doctor$i@example.com"],
+            [
+                'name' => "Doctor $i",
+                'role' => 'user',
+                'password' => bcrypt('password'),
+                'commission_pct' => 30,
+                'monthly_salary' => 0,
+            ]
+        );
+
+        // إضافة خدمات للطبيب إذا لم يكن لديه خدمات
+        if ($doctor->wasRecentlyCreated) {
+            Service::factory(2)->create(['doctor_id' => $doctor->id]);
+        }
     }
 
-    // 4. إنشاء المرضى (إذا كان الـ Factory سليم)
-    // ملاحظة: إذا استمر الخطأ، جرب تعطيل الأسطر التالية واحداً تلو الآخر لمعرفة أي Factory يسبب المشكلة
-    Patient::factory(10)->create();
-    Appointment::factory(10)->create();
+    // 4. إضافة بيانات عشوائية فقط إذا كانت الجداول فارغة
+    if (Patient::count() == 0) {
+        Patient::factory(10)->create();
+        Appointment::factory(10)->create();
+    }
 }
-
 
 }
