@@ -48,7 +48,8 @@ Route::middleware(['auth'])->group(function () {
     })->name('salaries.index');
     Route::get('/reports/hub', [\App\Http\Controllers\OperationalReportsController::class, 'index'])->name('reports.hub');
     // Redirect '/reports' to the reports hub for easier discovery
-    Route::get('/reports', function () { return redirect('/reports/hub'); })->name('reports.index');
+    Route::get('/reports', function () {
+        return redirect('/reports/hub'); })->name('reports.index');
     Route::get('/reports/doctors', function () {
         return view('reports.doctors');
     })->name('reports.doctors');

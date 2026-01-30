@@ -1,4 +1,0 @@
-{
-  "build": "composer install --no-dev && php artisan config:cache",
-  "start": "php artisan serve --host=0.0.0.0 --port=$PORT"
-}
